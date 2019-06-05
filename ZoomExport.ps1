@@ -1,4 +1,3 @@
-$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 Write-host -foregroundcolor Green "Initializing Variables..."
 $ErrorActionPreference = 'SilentlyContinue' > $null
 # Removes all Variables in case we're running from ISE
@@ -6,7 +5,7 @@ Get-Variable -Exclude PWD,*Preference | Remove-Variable -EA 0
 #ImportExcel is more useful than strictly modifying Excel COM Objects
 Install-Module ImportExcel -scope CurrentUser
 # Clears Screen
-Clear
+Clear-Host
 
 #Start-Sleep is a graphical sleep GUI used to show a progress bar in Shell
 function Start-Sleep($seconds) {
@@ -78,23 +77,30 @@ write-host -ForegroundColor Green "Date's entered ($EnteredStartDate to $Entered
 
 
 <# API Key and Secret used to communicate with Zoom - (Obtain from https://marketplace.zoom.us/user/build)
-   Enter the API Key under api_key and api_secret under each, as it is not posted under the Gitlab Repo   #>
+   Enter the API Key under api_key and api_secret under each for your Zoom instance   #>
 $APIURL = "https://api.zoom.us/v2/metrics/meetings"
-$api_key = ''
-$api_secret = ''
+$api_key = 'a'
+$api_secret = 'a'
 
 
 # Test to see if api_key and api_secret exist
 if ($api_key -eq ""){
-    write-warning "API Key not entered, Exiting..."
+    write-warning "API Key not entered - edit the API key on line 88 of this PowerShell Script (read README for details)"
     exit
 }elseif($api_secret -eq ""){
-    write-warning "API Secret not entered, Exiting..."
+    write-warning "API Secret not entered - edit the API key on line 88 of this PowerShell Script (read README for details)"
     exit
 }
 
-# Get the difference between the two date-time objects, if more than 30 days, end script with error
+# Get the difference between the two date-time objects, if more than 30 days, or a negative timeset end script with error
 $DateDifference = New-timespan -start $EnteredStartDate -End $EnteredEndDate
+
+# Ensure that the dates entered are not in the future
+$CurrentDate = get-date
+if (($CurrentDate -lt $EnteredStartDate) -or ($CurrentDate -lt $EnteredEndDate)){
+    Write-Warning "Entered date is in the future, exiting"
+    exit
+}
 
 if ($DateDifference -gt "32.00:00"){
     Write-Warning "Date difference over 32 days is hard-blocked by the API, exiting"
@@ -172,7 +178,7 @@ Write-host "End of data fetching portion - moving on to sorting"
 $userlist = @(
     "user1@email.com",
     "user2@email.com",
-    "user3@email.com",
+    "user3@email.com"
 )
 
 <#Loop through each of the entries sent back, and seperate a variable, Targettedmeetings, for requests that match the user list
