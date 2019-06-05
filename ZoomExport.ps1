@@ -194,9 +194,9 @@ Foreach ($meeting in $InitialMeetings){
 #Exports the Targeted meetings as two sheets in a single Excel worksheet file 
 $WorkItem = "$env:USERPROFILE\Downloads\Zoom Targeted Export, $EnteredStartdate to $EnteredEndDate.xlsx"
 #Coaches sheet
-try{$targettedmeetings | Select -Property "host","email","topic","start_time","end_time","duration","participants" | export-excel $WorkItem -TitleBackgroundColor Grey -BoldTopRow -AutoFilter -FreezeTopRow -WorksheetName Coaches}catch{write-error "Unrecoverable Error - Exception thrown"}
+try{$targettedmeetings | Select-Object -Property "host","email","topic","start_time","end_time","duration","participants" | export-excel $WorkItem -TitleBackgroundColor Grey -BoldTopRow -AutoFilter -FreezeTopRow -WorksheetName Coaches}catch{write-error "Unrecoverable Error - Exception thrown"}
 #RawData sheet
-try{$targettedmeetings | Select -Property "host","email","topic","start_time","end_time","duration","participants" | export-excel $WorkItem -TitleBackgroundColor Grey -BoldTopRow -AutoFilter -FreezeTopRow -WorksheetName RawData}catch{write-error "Unrecoverable Error - Exception thrown"}
+try{$targettedmeetings | Select-Object -Property "host","email","topic","start_time","end_time","duration","participants" | export-excel $WorkItem -TitleBackgroundColor Grey -BoldTopRow -AutoFilter -FreezeTopRow -WorksheetName RawData}catch{write-error "Unrecoverable Error - Exception thrown"}
 
 # Prompts user if they want a paste to the console of the zoom results
 $PastePrompt = read-host "Would you like to see a paste of the results? (Y/N)"
